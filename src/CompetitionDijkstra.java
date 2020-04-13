@@ -18,30 +18,121 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.BufferedReader; 
 import java.io.FileReader; 
-import java.io.IOException; 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map; 
 
 public class CompetitionDijkstra {
+
+
+	Map<Integer, Node> map;
+
+	private class Node {
+
+		private int from;
+		private ArrayList<Street> streets;
+
+		public Node(int from, int to, double dist)
+		{
+			this.from = from;
+			Street s = new Street(to, dist);
+
+			this.streets = new ArrayList<Street>();
+			this.streets.add(s);
+		}
+
+		public void addStreet(int to, double dist)
+		{
+			Street s = new Street(to, dist);
+			streets.add(s);
+		}
+
+		public int getFrom() 
+		{
+			return from;
+		}
+
+		public ArrayList<Street> getStreets() 
+		{
+			return streets;
+		}
+	}
+
+	private class Street {
+		private int to;
+		private double dist;
+
+		public Street(int to, double dist)
+		{
+			this.to = to;
+			this.dist = dist;
+		}
+
+		public int getTo() 
+		{
+			return to;
+		}
+
+		public double getDist() 
+		{
+			return dist;
+		}
+	}
 
 	/**
 	 * @param filename: A filename containing the details of the city road network
 	 * @param sA, sB, sC: speeds for 3 contestants
 	 */
-	CompetitionDijkstra (String filename, int sA, int sB, int sC){
+	CompetitionDijkstra (String filename, int sA, int sB, int sC) {
 
+		map = new HashMap<Integer, Node>();
+		createMap(filename);
+	}
+	
+	private void createMap(String filename) {
+		
 		try 
 		{
-
+			
 			File file = new File(filename); 
-
 			BufferedReader reader = new BufferedReader(new FileReader(file)); 
 
 			String line = reader.readLine();
+			int N = Integer.parseInt(line); // number of intersections
+			line = reader.readLine();
+			int S = Integer.parseInt(line);	// number of streets
+			line = reader.readLine();
+
 			while (line != null) 
 			{
-				System.out.println(line); 
+				String i = line.split(" ")[0];
+				int start = Integer.parseInt(i);
+				System.out.println(start);
+
+				String j = line.split(" ")[1];
+				int dest = Integer.parseInt(j);
+				System.out.println(dest);
+
+				String k = line.split(" ")[2];
+				double length = Double.parseDouble(k) * 1000;
+				System.out.println(length);
+
+				Node node1;
+				if(map.containsKey(start))
+				{
+					map.get(start).addStreet(dest, length);
+				
+				else
+				{
+					node1 = new Node(start, dest, length);
+					map.put(start, node1);
+				}
+				
+				//System.out.println(line); 
 				line = reader.readLine();
 			}
-				reader.close();
+			reader.close();
 		}
 		catch (FileNotFoundException e) 
 		{
@@ -65,9 +156,11 @@ public class CompetitionDijkstra {
 		return -1;
 	}
 
+
 	public static void main(String[] args)
 	{
 		String file = "C:\\Users\\flora\\Documents\\GitHub\\Shortest-Path-Algorithms\\data\\tinyEWD.txt";
+		// walking speed of contestants
 		int a = 84;
 		int b = 62;
 		int c = 76;
