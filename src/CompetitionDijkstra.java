@@ -5,7 +5,7 @@
  * It should be clear that the contestants may arrive at the intersections at different times, in
  * which case, the first to arrive can wait until the others arrive.
  * From an estimated walking speed for each one of the three contestants, ACM wants to determine the
- * minimum time that a live TV broadcast should last to cover their journey regardless of the contestantsâ€™
+ * minimum time that a live TV broadcast should last to cover their journey regardless of the contestants.
  * initial positions and the intersection they finally meet. You are hired to help ACM answer this question.
  * You may assume the following:
  *    · Each contestant walks at a given estimated speed.
@@ -33,13 +33,13 @@ public class CompetitionDijkstra {
 		private int from;
 		private ArrayList<Street> streets;
 
-		public Node(int from, int to, double dist)
+		public Node(int from)
 		{
 			this.from = from;
-			Street s = new Street(to, dist);
+			//Street s = new Street(to, dist);
 
 			this.streets = new ArrayList<Street>();
-			this.streets.add(s);
+			//this.streets.add(s);
 		}
 
 		public void addStreet(int to, double dist)
@@ -57,6 +57,11 @@ public class CompetitionDijkstra {
 		{
 			return streets;
 		}
+		
+		@Override
+	    public String toString() { 
+	        return String.format(from + ", " +  streets.toString()); 
+	    } 
 	}
 
 	private class Street {
@@ -78,19 +83,27 @@ public class CompetitionDijkstra {
 		{
 			return dist;
 		}
+		
+		@Override
+	    public String toString() { 
+	        return String.format("street(" + to + ", " + dist + ")"); 
+	    } 
 	}
 
 	/**
 	 * @param filename: A filename containing the details of the city road network
 	 * @param sA, sB, sC: speeds for 3 contestants
 	 */
-	CompetitionDijkstra (String filename, int sA, int sB, int sC) {
+	CompetitionDijkstra (String filename, int sA, int sB, int sC) 
+	{
 
 		map = new HashMap<Integer, Node>();
 		createMap(filename);
 	}
 	
-	private void createMap(String filename) {
+	
+	private void createMap(String filename) 
+	{
 		
 		try 
 		{
@@ -108,25 +121,40 @@ public class CompetitionDijkstra {
 			{
 				String i = line.split(" ")[0];
 				int start = Integer.parseInt(i);
-				System.out.println(start);
+				//System.out.println(start);
 
 				String j = line.split(" ")[1];
 				int dest = Integer.parseInt(j);
-				System.out.println(dest);
+			//	System.out.println(dest);
 
 				String k = line.split(" ")[2];
 				double length = Double.parseDouble(k) * 1000;
-				System.out.println(length);
+				//System.out.println(length);
 
-				Node node1;
+				Node node1, node2;
 				if(map.containsKey(start))
 				{
 					map.get(start).addStreet(dest, length);
+					
+					System.out.println("Node 0: " + map.get(start));
+					
+				}
 				
 				else
 				{
-					node1 = new Node(start, dest, length);
+					node1 = new Node(start);
 					map.put(start, node1);
+					node1.addStreet(dest, length);
+					
+					System.out.println("Node 1: " + node1);
+					
+					if(map.containsKey(dest) == false)
+					{
+						node2 = new Node(dest);
+						map.put(dest, node2);
+						
+						System.out.println("Node 2: " + node2);
+					}
 				}
 				
 				//System.out.println(line); 
@@ -165,6 +193,13 @@ public class CompetitionDijkstra {
 		int b = 62;
 		int c = 76;
 		CompetitionDijkstra dijkstra = new CompetitionDijkstra(file, a, b, c);
+		
+//		ArrayList<Integer> test = new ArrayList<Integer>();
+//		test.add(1);
+//		test.add(2);
+//		
+//		System.out.println(test.toString());
+		
 
 	}
 
