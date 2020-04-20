@@ -13,6 +13,8 @@
  * streets that the contestants can use to traverse the city.
  *
  * This class implements the competition using Floyd-Warshall algorithm
+ * 
+ *  @author Barbara Flora Molnar
  */
 
 public class CompetitionFloydWarshall {

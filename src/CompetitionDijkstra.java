@@ -1,5 +1,6 @@
 /*
  * A Contest to Meet (ACM) is a reality TV contest that sets three contestants at three random
+
  * city intersections. In order to win, the three contestants need all to meet at any intersection
  * of the city as fast as possible.
  * It should be clear that the contestants may arrive at the intersections at different times, in
@@ -13,25 +14,34 @@
  * streets that the contestants can use to traverse the city.
  *
  * This class implements the competition using Dijkstra's algorithm
+ * 
+ *  @author Barbara Flora Molnar
  */
 import java.io.File; 
+
 import java.io.FileNotFoundException;
 import java.io.BufferedReader; 
 import java.io.FileReader; 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map; 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set; 
 
 public class CompetitionDijkstra {
 
 
 	Map<Integer, Node> map;
+	LinkedList<Node> unvisited;
+	int sA, sB, sC;
 
 	private class Node {
 
 		private int from;
 		private ArrayList<Street> streets;
+		private double distFromSource;
 
 		public Node(int from)
 		{
@@ -39,7 +49,11 @@ public class CompetitionDijkstra {
 			//Street s = new Street(to, dist);
 
 			this.streets = new ArrayList<Street>();
-			//this.streets.add(s);
+			//his.streets.add(s);
+
+
+			// initialise cost of node
+			//this.dist = Double.MAX_VALUE;
 		}
 
 		public void addStreet(int to, double dist)
@@ -57,11 +71,19 @@ public class CompetitionDijkstra {
 		{
 			return streets;
 		}
-		
+
+		public double getDistFromSource() {
+			return distFromSource;
+		}
+
+		public void setDistFromSource(double distFromSource) {
+			this.distFromSource = distFromSource;
+		}
+
 		@Override
-	    public String toString() { 
-	        return String.format(from + ", " +  streets.toString()); 
-	    } 
+		public String toString() { 
+			return String.format(from + ", " +  streets.toString() + ", " + distFromSource); 
+		} 
 	}
 
 	private class Street {
@@ -83,11 +105,11 @@ public class CompetitionDijkstra {
 		{
 			return dist;
 		}
-		
+
 		@Override
-	    public String toString() { 
-	        return String.format("street(" + to + ", " + dist + ")"); 
-	    } 
+		public String toString() { 
+			return String.format("street(" + to + ", " + dist + ")"); 
+		} 
 	}
 
 	/**
@@ -96,18 +118,18 @@ public class CompetitionDijkstra {
 	 */
 	CompetitionDijkstra (String filename, int sA, int sB, int sC) 
 	{
-
+		this.sA = sA;
+		this.sB = sB;
+		this.sC = sC;
 		map = new HashMap<Integer, Node>();
 		createMap(filename);
 	}
-	
-	
-	private void createMap(String filename) 
+
+
+	public void createMap(String filename) 
 	{
-		
 		try 
-		{
-			
+		{	
 			File file = new File(filename); 
 			BufferedReader reader = new BufferedReader(new FileReader(file)); 
 
@@ -120,43 +142,42 @@ public class CompetitionDijkstra {
 			while (line != null) 
 			{
 				String i = line.split(" ")[0];
-				int start = Integer.parseInt(i);
+				int start = Integer.parseInt(i); // from
 				//System.out.println(start);
 
 				String j = line.split(" ")[1];
-				int dest = Integer.parseInt(j);
-			//	System.out.println(dest);
+				int dest = Integer.parseInt(j);	// to
+				//System.out.println(dest);
 
 				String k = line.split(" ")[2];
-				double length = Double.parseDouble(k) * 1000;
+				double length = Double.parseDouble(k) * 1000; // distance in meters
 				//System.out.println(length);
 
 				Node node1, node2;
 				if(map.containsKey(start))
 				{
 					map.get(start).addStreet(dest, length);
-					
-					System.out.println("Node 0: " + map.get(start));
-					
+
+					//System.out.println("Node 0: " + map.get(start));
 				}
-				
+
 				else
 				{
 					node1 = new Node(start);
 					map.put(start, node1);
 					node1.addStreet(dest, length);
-					
-					System.out.println("Node 1: " + node1);
-					
+
+					//System.out.println("Node 1: " + node1);
+
 					if(map.containsKey(dest) == false)
 					{
 						node2 = new Node(dest);
 						map.put(dest, node2);
-						
-						System.out.println("Node 2: " + node2);
+
+						//System.out.println("Node 2: " + node2);
 					}
 				}
-				
+
 				//System.out.println(line); 
 				line = reader.readLine();
 			}
@@ -172,35 +193,142 @@ public class CompetitionDijkstra {
 			System.err.println("IO exception.");
 			e.printStackTrace();
 		}
+
+	}
+
+	public void printMap()
+	{
+		for(Node node : map.values())
+		{
+			System.out.println("node: " + node);
+		}
+	}
+
+	public void reset()
+	{
+		unvisited = new LinkedList<Node>();
+
+		for(Node node : map.values())
+		{
+			node.setDistFromSource(Double.MAX_VALUE);
+			unvisited.add(node);
+		}
+	}
+
+
+	public void calcDistFromSource(int from)
+	{
+		map.get(from).setDistFromSource(0);
+
+		while(unvisited.size() != 0)
+		{
+			double smallestDist = unvisited.element().getDistFromSource();
+			Node smallestNode = unvisited.element();
+			
+			for(Node node : unvisited)
+			{
+				if(smallestDist > node.getDistFromSource())
+				{
+					smallestDist = node.getDistFromSource();
+					smallestNode = node;
+				}
+				
+				System.out.println("halos");
+			}
+			System.out.println("smol: " + smallestNode.getFrom());
+
+			System.out.println("halos out");
+			
+			for(Street street : smallestNode.streets)
+			{
+				double newDist = smallestNode.getDistFromSource() + street.getDist();
+
+				// compare new route to stored route and replace if new route is shorter
+				if(newDist < map.get(street.getTo()).getDistFromSource())
+				{
+					map.get(street.getTo()).setDistFromSource(newDist);
+				}
+				System.out.println("blegh");
+			}
+			
+			unvisited.remove(smallestNode);
+
+		}
+		System.out.println("while out");
+
+
+	}
+
+	// calculate the largest possible distance from from the source vertex
+	public double maxDist()
+	{
+		double maxDist = 0.0;
+		for(Node node : map.values())
+		{
+			if(maxDist < node.getDistFromSource())
+			{
+				maxDist = node.getDistFromSource();
+			}
+		}
+		System.out.println("max distance: " + maxDist);
+		return maxDist;
 	}
 
 
 	/**
 	 * @return int: minimum minutes that will pass before the three contestants can meet
 	 */
-	public int timeRequiredforCompetition(){
+	public int timeRequiredforCompetition() 
+	{
+		double totalMax = 0.0;
+		int fromMax = -1;
+		int speedMin = Math.min(sA, sB);
+		speedMin = Math.min(speedMin, sC);
 
-		//TO DO
-		return -1;
+		if(!isValidSpeed(sA) || !isValidSpeed(sB) || !isValidSpeed(sC))
+		{
+			return -1;
+		}
+
+		for(Node node : map.values())
+		{
+			reset();
+			calcDistFromSource(node.getFrom());
+			double max = maxDist();
+			if(totalMax < max)
+			{
+				totalMax = max;
+				fromMax = node.getFrom();
+			}
+		}
+
+		System.out.println("source node: " + fromMax); 
+		//		double speed = Double.parseToDouble()
+		return (int) Math.ceil(totalMax / (double) speedMin);
+
 	}
 
+
+	public boolean isValidSpeed(int speed)
+	{
+		if(speed < 50 || speed > 100)
+		{
+			return false;
+		}
+		return true;
+	}
 
 	public static void main(String[] args)
 	{
 		String file = "C:\\Users\\flora\\Documents\\GitHub\\Shortest-Path-Algorithms\\data\\tinyEWD.txt";
 		// walking speed of contestants
-		int a = 84;
-		int b = 62;
-		int c = 76;
+		int a = 60;
+		int b = 70;
+		int c = 80;
 		CompetitionDijkstra dijkstra = new CompetitionDijkstra(file, a, b, c);
-		
-//		ArrayList<Integer> test = new ArrayList<Integer>();
-//		test.add(1);
-//		test.add(2);
-//		
-//		System.out.println(test.toString());
-		
-
+		int result = dijkstra.timeRequiredforCompetition();
+		System.out.println(result);
+		dijkstra.printMap();
 	}
 
 }
