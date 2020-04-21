@@ -58,19 +58,40 @@ public class CompetitionTests {
 //		dijkstra.createMap();
 //		dijkstra.reset();
 //		dijkstra.calcDistFromSource(0);
-//		assertEquals("Testing node with no streets", 930, (int) dijkstra.maxDist());
+//		assertEquals("Testing node with no streets", -1, (int) dijkstra.maxDist());
 //	}
-
-
-
 
 
 
 	@Test
 	public void testFWConstructor() {
-		//TODO
+		CompetitionFloydWarshall fw = new CompetitionFloydWarshall("tinyEWD.txt", 60, 70, 80);
+		assertEquals("Testing FW constructor with valid inputs", 80, fw.sC);
+	}
+	
+	@Test 
+	public void testFWInvalidFile() {
+		CompetitionFloydWarshall fw = new CompetitionFloydWarshall("invalidText.txt", 60, 70, 80);
+		assertEquals("Testing FW constructor with invalid file input", -1, fw.timeRequiredforCompetition());
+	}
+	
+	@Test
+	public void testFWEmptyFile() {
+		CompetitionFloydWarshall fw = new CompetitionFloydWarshall("empty.txt", 60, 70, 80);
+		assertEquals("Testing FW constructor with empty file input", -1, fw.timeRequiredforCompetition());
+	}
+	
+	@Test
+	public void testFWInvalidSpeed1() {
+		CompetitionFloydWarshall fw = new CompetitionFloydWarshall("tinyEWD.txt", 30, 70, 80);
+		assertEquals("Testing FW constructor with invalid speed input", -1, fw.timeRequiredforCompetition());
+	}
+	
+	@Test
+	public void testFWInvalidSpeed2() {
+		CompetitionFloydWarshall fw = new CompetitionFloydWarshall("tinyEWD.txt", 60, 70, 1000);
+		assertEquals("Testing FW constructor with invalid speed input", -1, fw.timeRequiredforCompetition());
 	}
 
-	//TODO - more tests
 
 }

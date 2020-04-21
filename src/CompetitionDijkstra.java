@@ -19,6 +19,7 @@
  */
 import java.io.File; 
 
+
 import java.io.FileNotFoundException;
 import java.io.BufferedReader; 
 import java.io.FileReader; 
@@ -131,10 +132,10 @@ public class CompetitionDijkstra {
 			return -1;
 		}
 
-		if(isValidFile(filename) == false)
-		{
-			return -1;
-		}
+//		if(isValidFile(filename) == false)
+//		{
+//			return -1;
+//		}
 
 		try 
 		{	
@@ -195,11 +196,13 @@ public class CompetitionDijkstra {
 		{
 			System.err.println("File not found.");
 			e.printStackTrace();
+			return -1;
 		}
 		catch(IOException e)
 		{
 			System.err.println("IO exception.");
 			e.printStackTrace();
+			return -1;
 		}
 
 		return 0;
@@ -332,17 +335,17 @@ public class CompetitionDijkstra {
 		return true;
 	}
 
-	public boolean isValidFile(String filename)
-	{
-		File tmp = new File(filename);
-		if(tmp.exists())
-		{
-			System.out.println("true");
-			return true;
-		}
-		System.out.println("false");
-		return false;
-	}
+//	public boolean isValidFile(String filename)
+//	{
+//		File tmp = new File(filename);
+//		if(tmp.exists())
+//		{
+//			System.out.println("true");
+//			return true;
+//		}
+//		System.out.println("false");
+//		return false;
+//	}
 
 
 	//	public static void main(String[] args)
