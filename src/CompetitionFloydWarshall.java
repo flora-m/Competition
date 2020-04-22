@@ -54,6 +54,12 @@ public class CompetitionFloydWarshall {
 			BufferedReader reader = new BufferedReader(new FileReader(file)); 
 
 			String line = reader.readLine();
+			// check if file is empty
+			if(line == null)
+			{
+				reader.close();
+				return -1;
+			}
 			numOfIntersections = Integer.parseInt(line); // number of intersections
 			line = reader.readLine();
 			numOfStreets = Integer.parseInt(line);	// number of streets
@@ -80,10 +86,10 @@ public class CompetitionFloydWarshall {
 						table[i][j] = 0;
 					}
 
-				// set everything else equal to ~infinity
+					// set everything else equal to ~infinity
 					else
 					{
-						table[i][j] = Integer.MAX_VALUE;
+						table[i][j] = Double.MAX_VALUE;
 					}
 			}
 
@@ -186,20 +192,19 @@ public class CompetitionFloydWarshall {
 				}
 			}
 		}
-		printTable();
-		
+		 
 		// get largest distance between two intersections (vertices)
 		double max = maxDist();
-		System.out.println("max dist: " + max);
+//		System.out.println("max dist: " + max);
 		
 		// slowest walking speed
 		int speedMin = Math.min(sA, sB);
 		speedMin = Math.min(speedMin, sC);
-		System.out.println("speedMin: " + speedMin);
+//		System.out.println("speedMin: " + speedMin);
 		
 		// time required for slowest person to walk largest possible distance
 		int time = (int) Math.ceil(max / (double) speedMin);
-		System.out.println("time: " + time);
+//		System.out.println("time: " + time);
 		return time;
 
 
@@ -213,8 +218,9 @@ public class CompetitionFloydWarshall {
 //		int c = 80;
 //		CompetitionFloydWarshall fw = new CompetitionFloydWarshall(file, a, b, c);
 //		fw.createTable();
-//		fw.printTable();
 //		fw.timeRequiredforCompetition();
+//		fw.printTable();
+//
 //	}
 
 }

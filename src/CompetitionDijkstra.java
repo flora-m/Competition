@@ -1,6 +1,7 @@
 /*
  * A Contest to Meet (ACM) is a reality TV contest that sets three contestants at three random
 
+
  * city intersections. In order to win, the three contestants need all to meet at any intersection
  * of the city as fast as possible.
  * It should be clear that the contestants may arrive at the intersections at different times, in
@@ -37,7 +38,7 @@ public class CompetitionDijkstra {
 	int sA, sB, sC;
 	String filename;
 
-	private class Node {
+	public class Node {
 
 		private int from;
 		private ArrayList<Street> streets;
@@ -86,7 +87,7 @@ public class CompetitionDijkstra {
 		} 
 	}
 
-	private class Street {
+	public class Street {
 		private int to;
 		private double dist;
 
@@ -106,10 +107,10 @@ public class CompetitionDijkstra {
 			return dist;
 		}
 
-		@Override
-		public String toString() { 
-			return String.format("street(" + to + ", " + dist + ")"); 
-		} 
+//		@Override
+//		public String toString() { 
+//			return String.format("street(" + to + ", " + dist + ")"); 
+//		} 
 	}
 
 	/**
@@ -132,17 +133,19 @@ public class CompetitionDijkstra {
 			return -1;
 		}
 
-//		if(isValidFile(filename) == false)
-//		{
-//			return -1;
-//		}
-
 		try 
 		{	
 			BufferedReader reader = new BufferedReader(new FileReader(filename)); 
 
 			String line = reader.readLine();
-			int N = Integer.parseInt(line); // number of intersections
+			// check if file is empty
+			if(line == null)
+			{
+				reader.close();
+				return -1;
+			}
+			
+			int N = Integer.parseInt(line); // number of intersections 
 			line = reader.readLine();
 			int S = Integer.parseInt(line);	// number of streets
 			line = reader.readLine();
@@ -185,7 +188,6 @@ public class CompetitionDijkstra {
 						//System.out.println("Node 2: " + node2);
 					}
 				}
-
 				//System.out.println(line); 
 				line = reader.readLine();
 			}
@@ -292,7 +294,7 @@ public class CompetitionDijkstra {
 	/**
 	 * @return int: minimum minutes that will pass before the three contestants can meet
 	 */
-	public int timeRequiredforCompetition() 
+	public int timeRequiredforCompetition ()
 	{
 		double totalMax = 0.0;
 		int fromMax = -1;
@@ -335,17 +337,6 @@ public class CompetitionDijkstra {
 		return true;
 	}
 
-//	public boolean isValidFile(String filename)
-//	{
-//		File tmp = new File(filename);
-//		if(tmp.exists())
-//		{
-//			System.out.println("true");
-//			return true;
-//		}
-//		System.out.println("false");
-//		return false;
-//	}
 
 
 	//	public static void main(String[] args)
